@@ -68,3 +68,10 @@ Renders one record as a single line. Error reasons become `"<timestamp> <Name>: 
 ## The edge you will hit
 
 `stack` is only populated when the rejection reason is an `Error` or an object with a string `stack` property. A rejection of `null`, a number, or a plain object without a stack has `stack: null`. That is intentional: fabricating a stack from the tracker's own call site would be misleading, and `null` is an honest signal that no stack was available. If you need a stack for every rejection, reject with `Error` instances.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
